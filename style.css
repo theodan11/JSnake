@@ -1,0 +1,24 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.playground> div {
+    width: 240px;
+    display: grid;
+    grid-template-columns: repeat(10, auto);
+    /* gap: 0; */
+}
+
+.box {
+    width: 24px;
+    height: 24px;
+    /* background-color: red; */
+    border: 1px solid black;
+}
+
+.snake {
+    background-color: red;
+    padding: 2px;
+}
