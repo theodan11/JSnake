@@ -3,11 +3,17 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+.gameContainer{
+    position: relative;
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+}
 .playground> div {
-    width: 240px;
+    
+    width: 576px;
     display: grid;
-    grid-template-columns: repeat(10, auto);
+    grid-template-columns: repeat(24, auto);
     /* gap: 0; */
 }
 
@@ -21,4 +27,32 @@
 .snake {
     background-color: red;
     padding: 2px;
+}
+
+.head {
+    background-color: rgb(0, 232, 46);
+    padding: 2px;
+    
+}
+.head::after{
+    content: "😀";
+    
+}
+
+
+.gameOver{
+    background-color: aliceblue;
+    padding: 20px;
+    border-radius: 9px;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* transform: translateY(-50%); */
+    visibility: hidden;
+    /* display: flex; */
+}
+.dirBtn{
+    padding: 10px;
 }
