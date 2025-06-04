@@ -1,9 +1,11 @@
 const playground = document.querySelector(".playground")
 const playgroundChild = document.createElement("div")
 const gameOver = document.querySelector(".gameOver")
+const scoreDisplay = document.querySelector(".scoreDisplay")
 let snakeInitial = [[9, 2], [9, 3], [9, 4]]
 let direction = 'up'
-
+let applePos = [Math.floor(Math.random() * 24), Math.floor(Math.random() * 24)]
+let score = 0
 // let rightBtn = document.getElementById("rightBtn")
 // let leftBtn = document.getElementById("leftBtn")
 // let upBtn = document.getElementById("upBtn")
@@ -12,13 +14,23 @@ let direction = 'up'
 let dirBtn = document.querySelectorAll(".dirBtn")
 
 const mainGameLoop = setInterval(() => {
-
+    // applePosition()
     keyInputHandler()
     snakeMovement()
+    checkAppleEat()
     renderGraphics()
 
 }, 500)
 
+
+const checkAppleEat = () =>{
+    if(applePos[0] === snakeInitial[snakeInitial.length - 1][0] && applePos[1] === snakeInitial[snakeInitial.length - 1][1] ){
+        snakeInitial.unshift([snakeInitial[0][0], snakeInitial[0][1]])
+        applePosition()
+        score ++
+        
+    }
+}
 
 const keyInputHandler = () => {
     dirBtn.forEach((btn) => {
@@ -66,11 +78,16 @@ const snakeMovement = () => {
 
 }
 
+const applePosition = () =>{
+    applePos= [Math.floor(Math.random() * 24), Math.floor(Math.random() * 24)]
+    console.log(applePos)
+}
+
 const checkBoundary = () => {
-    if (snakeInitial[snakeInitial.length - 1][0] === 0 ||
-        snakeInitial[snakeInitial.length - 1][0] === 23 ||
-        snakeInitial[snakeInitial.length - 1][1] === 23 ||
-        snakeInitial[snakeInitial.length - 1][1] === 0
+    if (snakeInitial[snakeInitial.length - 1][0] === -1 ||
+        snakeInitial[snakeInitial.length - 1][0] === 24 ||
+        snakeInitial[snakeInitial.length - 1][1] === 24 ||
+        snakeInitial[snakeInitial.length - 1][1] === -1
     ) {
         clearInterval(mainGameLoop)
         gameOver.style.visibility = 'visible'
@@ -79,6 +96,7 @@ const checkBoundary = () => {
 }
 
 const renderGraphics = () => {
+    scoreDisplay.textContent = `${score}`
     playgroundChild.innerHTML = '';
     for (let i = 0; i < 24; i++) {
         for (let j = 0; j < 24; j++) {
@@ -95,6 +113,10 @@ const renderGraphics = () => {
                     box.classList.add("head")
                 } else {
                     box.classList.remove("head")
+                }
+
+                if(applePos[0] === i && applePos[1] === j ){
+                    box.classList.add("apple")
                 }
             }
             playgroundChild.appendChild(box)
