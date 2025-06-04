@@ -2,10 +2,13 @@ const playground = document.querySelector(".playground")
 const playgroundChild = document.createElement("div")
 const gameOver = document.querySelector(".gameOver")
 const scoreDisplay = document.querySelector(".scoreDisplay")
-let snakeInitial = [[9, 2], [9, 3], [9, 4]]
+// let snakeInitial = [[9, 2], [9, 3], [9, 4]]
+let snakeInitial = [[9, 2], [9, 3], [9, 4], [9, 5], [9, 6], [9, 7]]
 let direction = 'up'
 let applePos = [Math.floor(Math.random() * 24), Math.floor(Math.random() * 24)]
 let score = 0
+let snakeCop
+
 // let rightBtn = document.getElementById("rightBtn")
 // let leftBtn = document.getElementById("leftBtn")
 // let upBtn = document.getElementById("upBtn")
@@ -15,6 +18,7 @@ let dirBtn = document.querySelectorAll(".dirBtn")
 
 const mainGameLoop = setInterval(() => {
     // applePosition()
+    snakeCop = [...snakeInitial]
     keyInputHandler()
     snakeMovement()
     checkAppleEat()
@@ -23,12 +27,12 @@ const mainGameLoop = setInterval(() => {
 }, 500)
 
 
-const checkAppleEat = () =>{
-    if(applePos[0] === snakeInitial[snakeInitial.length - 1][0] && applePos[1] === snakeInitial[snakeInitial.length - 1][1] ){
+const checkAppleEat = () => {
+    if (applePos[0] === snakeInitial[snakeInitial.length - 1][0] && applePos[1] === snakeInitial[snakeInitial.length - 1][1]) {
         snakeInitial.unshift([snakeInitial[0][0], snakeInitial[0][1]])
         applePosition()
-        score ++
-        
+        score++
+
     }
 }
 
@@ -78,12 +82,18 @@ const snakeMovement = () => {
 
 }
 
-const applePosition = () =>{
-    applePos= [Math.floor(Math.random() * 24), Math.floor(Math.random() * 24)]
+const applePosition = () => {
+    applePos = [Math.floor(Math.random() * 24), Math.floor(Math.random() * 24)]
     console.log(applePos)
+
 }
 
 const checkBoundary = () => {
+
+    snakeCop.splice(snakeInitial.length - 1, 1)
+    // console.log(snakeCop)
+    // console.log(snakeInitial[snakeInitial.length - 1])
+    // console.log(snakeCop.includes(snakeInitial[snakeInitial.length - 1]))
     if (snakeInitial[snakeInitial.length - 1][0] === -1 ||
         snakeInitial[snakeInitial.length - 1][0] === 24 ||
         snakeInitial[snakeInitial.length - 1][1] === 24 ||
@@ -91,6 +101,18 @@ const checkBoundary = () => {
     ) {
         clearInterval(mainGameLoop)
         gameOver.style.visibility = 'visible'
+    }
+    else {
+        for (let i = 0; i < snakeCop.length; i++) {
+            console.log(snakeCop[i])
+            console.log(snakeInitial[snakeInitial.length - 1])
+            if (snakeCop[i][0] === snakeInitial[snakeInitial.length - 1][0] && 
+                snakeCop[i][1] === snakeInitial[snakeInitial.length - 1][1]) {
+                clearInterval(mainGameLoop)
+                gameOver.style.visibility = 'visible'
+            }
+        }
+
     }
 
 }
@@ -115,7 +137,7 @@ const renderGraphics = () => {
                     box.classList.remove("head")
                 }
 
-                if(applePos[0] === i && applePos[1] === j ){
+                if (applePos[0] === i && applePos[1] === j) {
                     box.classList.add("apple")
                 }
             }

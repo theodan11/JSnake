@@ -28,6 +28,9 @@
     background-color: red;
     padding: 2px;
 }
+.snake::after {
+    /* content: '✈'; */
+}
 
 .head {
     background-color: white;
