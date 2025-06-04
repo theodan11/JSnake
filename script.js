@@ -17,9 +17,9 @@ let snakeCop
 let dirBtn = document.querySelectorAll(".dirBtn")
 
 const mainGameLoop = setInterval(() => {
+    keyInputHandler()
     // applePosition()
     snakeCop = [...snakeInitial]
-    keyInputHandler()
     snakeMovement()
     checkAppleEat()
     renderGraphics()
@@ -37,6 +37,26 @@ const checkAppleEat = () => {
 }
 
 const keyInputHandler = () => {
+    window.addEventListener("keydown", (e)=>{
+        switch(e.code){
+            case "KeyD":
+                // console.log(`key pressed ${e.code}`)
+                checkValidMovement("right")
+                break
+            case "KeyW":
+                // console.log(`key pressed ${e.code}`)
+                checkValidMovement("up")
+                break
+            case "KeyA":
+                // console.log(`key pressed ${e.code}`)
+                checkValidMovement("left")
+                break
+            case "KeyS":
+                // console.log(`key pressed ${e.code}`)
+                checkValidMovement("down")
+                break
+        }
+    })
     dirBtn.forEach((btn) => {
         btn.addEventListener("click", (e) => {
             // console.log(e.target.value)
@@ -84,7 +104,12 @@ const snakeMovement = () => {
 
 const applePosition = () => {
     applePos = [Math.floor(Math.random() * 24), Math.floor(Math.random() * 24)]
-    console.log(applePos)
+    // console.log(applePos)
+    for(let i = 0; i< snakeInitial.length; i++){
+        if(snakeInitial[i].includes(applePos)){
+            applePosition()
+        }
+    }
 
 }
 
@@ -104,8 +129,8 @@ const checkBoundary = () => {
     }
     else {
         for (let i = 0; i < snakeCop.length; i++) {
-            console.log(snakeCop[i])
-            console.log(snakeInitial[snakeInitial.length - 1])
+            // console.log(snakeCop[i])
+            // console.log(snakeInitial[snakeInitial.length - 1])
             if (snakeCop[i][0] === snakeInitial[snakeInitial.length - 1][0] && 
                 snakeCop[i][1] === snakeInitial[snakeInitial.length - 1][1]) {
                 clearInterval(mainGameLoop)
