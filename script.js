@@ -226,7 +226,7 @@ const gameOverScreen = () => {
 }
 
 const renderGraphics = () => {
-    scoreDisplay.textContent = `${score}`
+    scoreDisplay.textContent = `Score: ${score}`
     playgroundChild.innerHTML = '';
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
