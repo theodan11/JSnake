@@ -2,10 +2,16 @@ const playground = document.querySelector(".playground")
 const playgroundChild = document.createElement("div")
 const gameOver = document.querySelector(".gameOver")
 const scoreDisplay = document.querySelector(".scoreDisplay")
-// let snakeInitial = [[9, 2], [9, 3], [9, 4]]
-let snakeInitial = [[9, 2], [9, 3], [9, 4], [9, 5], [9, 6], [9, 7]]
-let direction = 'up'
-let applePos = [Math.floor(Math.random() * 24), Math.floor(Math.random() * 24)]
+const restartBtn = document.querySelector(".restartBtn")
+
+const row = 21
+const col = 36
+// let snakeInitial = [[1, 2], [1, 3], [1, 4]]
+
+let start = true
+// let snakeInitial = [[9, 2], [9, 3], [9, 4], [9, 5], [9, 6], [9, 7]]
+let direction = 'down'
+let applePos = [Math.floor(Math.random() * row), Math.floor(Math.random() * col)]
 let score = 0
 let snakeCop
 
@@ -16,7 +22,64 @@ let snakeCop
 
 let dirBtn = document.querySelectorAll(".dirBtn")
 
-const mainGameLoop = setInterval(() => {
+
+const menuContainer = document.createElement("div")
+const startButton = document.createElement("button")
+
+menuContainer.classList.add("menuContainer")
+startButton.classList.add("startBtn")
+let currentGame
+
+
+
+
+
+
+
+
+const startGame = () => {
+    score = 0
+    snakeInitial = snakePosition()
+    direction = "right"
+    applePosition()
+    gameOver.style.visibility = 'hidden'
+    currentGame = setInterval(mainGameLoop, 300)
+}
+
+const snakePosition = () => {
+    let randRow = Math.floor(Math.random() * 18)
+    let randCol = Math.floor(Math.random() * 18)
+    // let snakeInitial = [[randRow, randCol], [randRow, randCol + 1], [randRow, randCol + 2]]
+    let snakeInitial = [[randRow, randCol], [randRow, randCol + 1]]
+    return snakeInitial
+}
+
+let snakeInitial = snakePosition()
+const menuScreen = () => {
+
+
+
+    startButton.textContent = 'Start Games'
+    menuContainer.appendChild(startButton)
+    playground.appendChild(menuContainer)
+
+
+    startButton.addEventListener("click", () => {
+        menuContainer.classList.add("hideMenu")
+        menuContainer.classList.remove("menuContainer")
+        startButton.style.display = 'none'
+        start = false
+        startGame()
+
+        console.log("hide added")
+    })
+}
+
+menuScreen()
+
+const mainGameLoop = () => {
+
+
     keyInputHandler()
     // applePosition()
     snakeCop = [...snakeInitial]
@@ -24,7 +87,21 @@ const mainGameLoop = setInterval(() => {
     checkAppleEat()
     renderGraphics()
 
-}, 500)
+}
+
+// const mainGameLoop = setInterval(() => {
+//     if (start) {
+//         menuScreen()
+//     }
+
+//     keyInputHandler()
+//     // applePosition()
+//     snakeCop = [...snakeInitial]
+//     snakeMovement()
+//     checkAppleEat()
+//     renderGraphics()
+
+// }, 300)
 
 
 const checkAppleEat = () => {
@@ -37,8 +114,8 @@ const checkAppleEat = () => {
 }
 
 const keyInputHandler = () => {
-    window.addEventListener("keydown", (e)=>{
-        switch(e.code){
+    window.addEventListener("keydown", (e) => {
+        switch (e.code) {
             case "KeyD":
                 // console.log(`key pressed ${e.code}`)
                 checkValidMovement("right")
@@ -103,10 +180,10 @@ const snakeMovement = () => {
 }
 
 const applePosition = () => {
-    applePos = [Math.floor(Math.random() * 24), Math.floor(Math.random() * 24)]
+    applePos = [Math.floor(Math.random() * row), Math.floor(Math.random() * col)]
     // console.log(applePos)
-    for(let i = 0; i< snakeInitial.length; i++){
-        if(snakeInitial[i].includes(applePos)){
+    for (let i = 0; i < snakeInitial.length; i++) {
+        if (snakeInitial[i].includes(applePos)) {
             applePosition()
         }
     }
@@ -120,21 +197,19 @@ const checkBoundary = () => {
     // console.log(snakeInitial[snakeInitial.length - 1])
     // console.log(snakeCop.includes(snakeInitial[snakeInitial.length - 1]))
     if (snakeInitial[snakeInitial.length - 1][0] === -1 ||
-        snakeInitial[snakeInitial.length - 1][0] === 24 ||
-        snakeInitial[snakeInitial.length - 1][1] === 24 ||
+        snakeInitial[snakeInitial.length - 1][0] === row ||
+        snakeInitial[snakeInitial.length - 1][1] === col ||
         snakeInitial[snakeInitial.length - 1][1] === -1
     ) {
-        clearInterval(mainGameLoop)
-        gameOver.style.visibility = 'visible'
+        gameOverScreen()
     }
     else {
         for (let i = 0; i < snakeCop.length; i++) {
             // console.log(snakeCop[i])
             // console.log(snakeInitial[snakeInitial.length - 1])
-            if (snakeCop[i][0] === snakeInitial[snakeInitial.length - 1][0] && 
+            if (snakeCop[i][0] === snakeInitial[snakeInitial.length - 1][0] &&
                 snakeCop[i][1] === snakeInitial[snakeInitial.length - 1][1]) {
-                clearInterval(mainGameLoop)
-                gameOver.style.visibility = 'visible'
+                gameOverScreen()
             }
         }
 
@@ -142,11 +217,19 @@ const checkBoundary = () => {
 
 }
 
+const gameOverScreen = () => {
+    const scoreDisplayS = document.querySelector(".scoreDisplayS")
+    scoreDisplayS.textContent = `Score: ${score}`
+    gameOver.style.visibility = 'visible'
+    clearInterval(currentGame)
+    restartBtn.addEventListener("click", startGame)
+}
+
 const renderGraphics = () => {
     scoreDisplay.textContent = `${score}`
     playgroundChild.innerHTML = '';
-    for (let i = 0; i < 24; i++) {
-        for (let j = 0; j < 24; j++) {
+    for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
             let box = document.createElement("div")
             box.classList.add("box")
             box.setAttribute("data-x", i)
