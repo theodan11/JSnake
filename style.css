@@ -15,6 +15,7 @@ body {
     background-position: bottom center;
     background-repeat: no-repeat; */
     font-family: "Tiny5", sans-serif;
+   
 }
 
 .gameContainer {
@@ -68,6 +69,7 @@ body {
     /* background-color: red; */
     /* background-color: rgb(255, 231, 218); */
     border: 1px solid rgba(251, 249, 249, 0.349);
+    transition: all .3s ease;
 }
 
 .snake {
@@ -76,6 +78,7 @@ body {
     padding: 2px;
     /* width: 12px;
     height: 12px; */
+    transition: all .3s ease;
 }
 
 .snake::after {
