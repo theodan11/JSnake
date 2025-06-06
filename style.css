@@ -4,29 +4,33 @@
     box-sizing: border-box;
     font-weight: 400;
 }
+
 .tiny5-regular {
     font-family: "Tiny5", sans-serif;
     /* font-weight: 400; */
     font-style: normal;
-  }
+}
 
 body {
     /* background: url(./assets/image/nokia3310.jpg);
     background-position: bottom center;
     background-repeat: no-repeat; */
     font-family: "Tiny5", sans-serif;
-   
+
 }
+
+
 
 .gameContainer {
 
-    margin-top: 30px;
+    margin-top: 10%;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-
+    /* transform: scale(1.2); */
+    margin-bottom: 40px;
 }
 
 .playground {
@@ -60,16 +64,17 @@ body {
     display: grid;
     grid-template-columns: repeat(36, auto);
     /* gap: 0; */
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
 .box {
     width: 14px;
     height: 14px;
     /* background-color: red; */
-    /* background-color: rgb(255, 231, 218); */
-    border: 1px solid rgba(251, 249, 249, 0.349);
+    background-color: rgb(53, 101, 60);
+    border: 1px solid rgba(102, 151, 100, 0.349);
     transition: all .3s ease;
+    /* background-image: url(./middleTile.png); */
 }
 
 .snake {
@@ -86,7 +91,7 @@ body {
 }
 
 .head {
-    border: 2px solid white;
+    border: 2px solid rgb(66, 173, 8);
     background-color: rgb(88, 154, 37);
     padding: 2px;
     border-radius: 4px;
@@ -119,7 +124,11 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: aliceblue;
+    /* background-color: aliceblue; */
+    background: url(./gameOver.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
     padding: 20px;
     border-radius: 9px;
     position: absolute;
@@ -131,17 +140,66 @@ body {
     visibility: hidden;
     gap: 4px;
     /* display: flex; */
+    color: white;
 }
 
 .gameOver>p {
     font-size: 24px;
     font-weight: bold;
 }
+
 .gameOver>.restartBtn {
     margin-top: 16px;
+    font-family: "Tiny5", sans-serif;
     font-weight: 400;
     padding: 4px 12px;
+    border: none;
+    font-size: 24px;
+    color: white;
+    border-radius: 8px;
+    background: #318216;
+    background: radial-gradient(circle, rgba(49, 130, 22, 1) 10%, rgba(24, 115, 57, 1) 79%, rgba(63, 150, 44, 1) 100%);
+    transition: all .3s ease;
+    cursor: pointer;
 }
+
+.gameOver>.restartBtn:hover {
+    background: #488f31;
+    background: radial-gradient(circle, rgba(72, 143, 49, 1) 13%, rgba(29, 163, 78, 1) 96%);
+}
+
+.controller {
+    transform: rotateZ(-45deg);
+    gap: 10px;
+    margin-top: 75px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 120px;
+    /* background-color: red; */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+}
+
 .dirBtn {
+    font-family: "Tiny5", sans-serif;
     padding: 10px;
+    width: 56px;
+    height: 56px;
+    color: white;
+    border-radius: 50%;
+    transform: rotateZ(45deg);
+    background: #318216;
+    background: radial-gradient(circle, rgba(49, 130, 22, 1) 10%, rgba(24, 115, 57, 1) 79%, rgba(63, 150, 44, 1) 100%);
+    transition: all .3s ease;
+    cursor: pointer;
+}
+.dirBtn:hover{
+    background: #488f31;
+    background: radial-gradient(circle, rgba(72, 143, 49, 1) 13%, rgba(29, 163, 78, 1) 96%);
+
+}
+.tile {
+    border: none;
+    background-color: transparent;
 }

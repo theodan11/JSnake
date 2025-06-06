@@ -3,7 +3,7 @@ const playgroundChild = document.createElement("div")
 const gameOver = document.querySelector(".gameOver")
 const scoreDisplay = document.querySelector(".scoreDisplay")
 const restartBtn = document.querySelector(".restartBtn")
-
+const controllerDisplay = document.querySelector(".controller")
 const row = 21
 const col = 36
 // let snakeInitial = [[1, 2], [1, 3], [1, 4]]
@@ -16,7 +16,7 @@ const col = 36
 // let upBtn = document.getElementById("upBtn")
 // let downBtn = document.getElementById("downBtn")
 let direction = 'right'
-let applePos = [Math.floor(Math.random() * row), Math.floor(Math.random() * col)]
+let applePos = [1 + Math.floor(Math.random() * (row - 2)), 1 + Math.floor(Math.random() * col - 2)]
 let score = 0
 let snakeCop
 let start = true
@@ -24,14 +24,32 @@ let nextMove = 'right'
 let dirBtn = document.querySelectorAll(".dirBtn")
 let gameOverFlag = false
 
+let soundFx ={
+    eat: new Howl({
+        src:"./quack_5.mp3"
+    }),
+    gameOverFX: new Howl({
+        src:"./tmp8ljn9e7h.mp3"
+    }),
+    startGameFX: new Howl({
+        src: "./a-few-moments-later-sponge-bob-sfx-fun.mp3"
+    })
+}
 
+let gameSound = {
+    music : new Howl({
+        src:"./u_i_a.mp3",
+        loop: true,
+        volume: 0.20
+    })
+}
 const menuContainer = document.createElement("div")
 const startButton = document.createElement("button")
 
 menuContainer.classList.add("menuContainer")
 startButton.classList.add("startBtn")
 let currentGame
-
+controllerDisplay.style.visibility = 'hidden'
 
 
 
@@ -59,7 +77,8 @@ const keyInputHandler = () => {
     dirBtn.forEach((btn) => {
         btn.addEventListener("click", (e) => {
             // console.log(e.target.value)
-            checkValidMovement(e.target.value)
+            // checkValidMovement(e.target.value)
+            nextMove = e.target.value
         })
     })
 }
@@ -75,10 +94,35 @@ const checkValidMovement = (move) => {
         direction = `${move}`
     }
 }
+const applePosition = () => {
+    applePos = [ Math.floor(Math.random() * (row - 2)),  Math.floor(Math.random() * col - 2)]
+    // console.log(applePos)
+    if(applePos[0] <= 0 || applePos[1] <= 0){
+        applePosition()
+    }
+
+    
+    for (let i = 0; i < snakeInitial.length; i++) {
+        if (snakeInitial.some((ele)=>{
+            return ele === applePos
+        })) {
+            applePosition()
+        }
+    }
+    // console.log(applePos)
+}
 
 
 
 const startGame = () => {
+    if(soundFx.gameOverFX.playing()){
+        soundFx.gameOverFX.stop()
+    }
+
+    if(!gameSound.music.playing()){
+        gameSound.music.play()
+    }
+    soundFx.startGameFX.play()
     score = 0
     snakeInitial = snakePosition()
     direction = "right"
@@ -86,12 +130,17 @@ const startGame = () => {
     applePosition()
     gameOverFlag = false
     gameOver.style.visibility = 'hidden'
+    controllerDisplay.style.visibility = 'visible'
     currentGame = setInterval(mainGameLoop, 300)
 }
 
 const snakePosition = () => {
     let randRow = Math.floor(Math.random() * 18)
     let randCol = Math.floor(Math.random() * 18)
+    if(randRow <= 0 && randCol <= 0){
+        randRow = 2
+        randCol = 2
+    }
     // let snakeInitial = [[randRow, randCol], [randRow, randCol + 1], [randRow, randCol + 2]]
     let snakeInitial = [[randRow, randCol], [randRow, randCol + 1]]
     return snakeInitial
@@ -116,7 +165,7 @@ const menuScreen = () => {
         start = false
         startGame()
 
-        console.log("hide added")
+        // console.log("hide added")
     })
 }
 
@@ -156,6 +205,7 @@ const checkAppleEat = () => {
     if (applePos[0] === snakeInitial[snakeInitial.length - 1][0] && applePos[1] === snakeInitial[snakeInitial.length - 1][1]) {
         snakeInitial.unshift([snakeInitial[0][0], snakeInitial[0][1]])
         applePosition()
+        soundFx.eat.play()
         score++
 
     }
@@ -188,16 +238,6 @@ const snakeMovement = () => {
 
 }
 
-const applePosition = () => {
-    applePos = [Math.floor(Math.random() * row), Math.floor(Math.random() * col)]
-    // console.log(applePos)
-    for (let i = 0; i < snakeInitial.length; i++) {
-        if (snakeInitial[i].includes(applePos)) {
-            applePosition()
-        }
-    }
-
-}
 
 
 const checkBoundary = () => {
@@ -206,10 +246,10 @@ const checkBoundary = () => {
     // console.log(snakeCop)
     // console.log(snakeInitial[snakeInitial.length - 1])
     // console.log(snakeCop.includes(snakeInitial[snakeInitial.length - 1]))
-    if (snakeInitial[snakeInitial.length - 1][0] === -1 ||
-        snakeInitial[snakeInitial.length - 1][0] === row ||
-        snakeInitial[snakeInitial.length - 1][1] === col ||
-        snakeInitial[snakeInitial.length - 1][1] === -1
+    if (snakeInitial[snakeInitial.length - 1][0] === 0 ||
+        snakeInitial[snakeInitial.length - 1][0] === row - 1 ||
+        snakeInitial[snakeInitial.length - 1][1] === col - 1 ||
+        snakeInitial[snakeInitial.length - 1][1] === 0
     ) {
         gameOverScreen()
         gameOverFlag = true
@@ -230,10 +270,16 @@ const checkBoundary = () => {
 }
 
 const gameOverScreen = () => {
+    if(soundFx.startGameFX.playing()){
+        soundFx.startGameFX.stop()
+    }
+    gameSound.music.stop()
+    soundFx.gameOverFX.play()
     clearInterval(currentGame)
     const scoreDisplayS = document.querySelector(".scoreDisplayS")
     scoreDisplayS.textContent = `Score: ${score}`
     gameOver.style.visibility = 'visible'
+    controllerDisplay.style.visibility = 'hidden'
     restartBtn.addEventListener("click", startGame)
 }
 
@@ -245,10 +291,54 @@ const renderGraphics = () => {
         for (let i = 0; i < row; i++) {
             for (let j = 0; j < col; j++) {
                 let box = document.createElement("div")
+
                 box.classList.add("box")
                 box.setAttribute("data-x", i)
                 box.setAttribute("data-y", j)
                 for (let s = 0; s < snakeInitial.length; s++) {
+                    if (i === row - 1 && j !== 0 && j <= col - 2) {
+                        box.classList.add("tile")
+                        box.innerHTML = `
+                        <img src='./bottomTile.png'>
+                        `
+                    } else if (i === 0 && j !== 0 && j <= col - 2) {
+
+                        box.classList.add("tile")
+                        box.innerHTML = `
+                            <img src='./topTile.png'>
+                            `
+
+                    } else if (i === 0 && j === 0) {
+                        box.classList.add("tile")
+                        box.innerHTML = `
+                        <img src='./topLeftTile.png'>
+                        `
+                    } else if (i === 0 && j === col - 1) {
+                        box.classList.add("tile")
+                        box.innerHTML = `
+                        <img src='./topRightTile.png'>
+                        `
+                    } else if (i === row - 1 && j === col - 1) {
+                        box.classList.add("tile")
+                        box.innerHTML = `
+                        <img src='./bottomRightTile.png'>
+                        `
+                    } else if (i === row - 1 && j === 0) {
+                        box.classList.add("tile")
+                        box.innerHTML = `
+                        <img src='./bottomLeftTile.png'>
+                        `
+                    } else if (i !== row - 1 && i !== 0 && j !== 0 && j === col - 1) {
+                        box.classList.add("tile")
+                        box.innerHTML = `
+                        <img src='./rightTile.png'>
+                        `
+                    }else if (i !== row - 1 && i !== 0 && j === 0 && j !== col - 1) {
+                        box.classList.add("tile")
+                        box.innerHTML = `
+                        <img src='./leftTile.png'>
+                        `
+                    }
                     if (snakeInitial[s][0] === i && snakeInitial[s][1] === j) {
                         box.classList.add("snake")
                     }
