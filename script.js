@@ -191,7 +191,7 @@ const menuScreen = () => {
 
 
 
-    startButton.textContent = `JSnake/ntart`
+    startButton.innerHTML = `JSnake<br>tart`
     menuContainer.appendChild(startButton)
     playground.appendChild(menuContainer)
 
