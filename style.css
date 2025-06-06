@@ -16,14 +16,52 @@ body {
     background-position: bottom center;
     background-repeat: no-repeat; */
     font-family: "Tiny5", sans-serif;
+    background-color: #9dca8e;
+}
+
+#musicOn {
+    display: none;
+}
+
+.musicControl span {
+    cursor: pointer;
+}
+
+.musicControl {
+    transition: all .3s ease;
+    visibility: hidden;
+    margin-right: 30px;
+}
+
+.musicControl label input:checked~.musicLable {
+    color: #318216;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.controls {
+    padding: 0px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 546px;
+    /* background-color: red; */
+    margin-left: auto;
+    margin-right: auto;
+    /* visibility: 'hidden'; */
+}
+
+.musicControl {
+    align-self: start;
+    justify-self: start;
+    visibility: 'hidden';
 
 }
 
-
-
 .gameContainer {
 
-    margin-top: 10%;
+    margin-top: 5%;
     position: relative;
     display: flex;
     align-items: center;
@@ -54,9 +92,15 @@ body {
 }
 
 .menuContainer>.startBtn {
-
-    width: 56px;
-    height: 46px;
+    background: url(./startImage.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 186px;
+    color:white;
+    font-size: 36px;
+    font-family: "Tiny5", sans-serif;
+    height: 162px;
+    border: none;
 }
 
 .playground>div {
@@ -96,7 +140,23 @@ body {
     padding: 2px;
     border-radius: 4px;
 
+    transition: all .3s ease;
+}
 
+.zero {
+    transform: rotateZ(0deg);
+}
+
+.minusNinety {
+    transform: rotateZ(-90deg);
+}
+
+.minusTwoSeventy {
+    transform: rotateZ(-270deg);
+}
+
+.minusOneEighty {
+    transform: rotateY(-180deg);
 }
 
 .head::after {
@@ -110,14 +170,18 @@ body {
 
 .apple {
     /* background-color: green; */
+    height: 14px;
+    width: 14px;
+
 }
 
-.apple::after {
-    content: '🍎';
-    font-size: 12px;
-    position: relative;
-    top: -6px;
+.apple>img {
+    /* background-color: green; */
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
 }
+
 
 .gameOver {
     display: flex;
@@ -171,17 +235,18 @@ body {
 .controller {
     transform: rotateZ(-45deg);
     gap: 10px;
-    margin-top: 75px;
-    margin-left: auto;
-    margin-right: auto;
+    /* margin-top: 75px; */
+    /* margin-left: auto;
+    margin-right: auto; */
     width: 120px;
     /* background-color: red; */
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-
+    visibility: hidden;
 }
 
 .dirBtn {
+    
     font-family: "Tiny5", sans-serif;
     padding: 10px;
     width: 56px;
@@ -194,12 +259,32 @@ body {
     transition: all .3s ease;
     cursor: pointer;
 }
-.dirBtn:hover{
+
+.dirBtn:hover {
     background: #488f31;
     background: radial-gradient(circle, rgba(72, 143, 49, 1) 13%, rgba(29, 163, 78, 1) 96%);
 
 }
+
 .tile {
     border: none;
     background-color: transparent;
+}
+.scoreContainer{
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 450px;
+}.scoreDisplay{
+    font-size: 18px;
+}
+.highScoreDisplay{
+    font-size: 24px;
+}
+footer{
+    margin-top: 50px;
+    font-size: 24px;
+    color: rgb(29, 29, 29);
+    text-align: center;
 }

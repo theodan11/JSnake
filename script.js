@@ -4,8 +4,20 @@ const gameOver = document.querySelector(".gameOver")
 const scoreDisplay = document.querySelector(".scoreDisplay")
 const restartBtn = document.querySelector(".restartBtn")
 const controllerDisplay = document.querySelector(".controller")
+const musicControl = document.querySelector(".musicControl")
+const highScoreDisplay = document.querySelector(".highScoreDisplay")
+
 const row = 21
 const col = 36
+
+
+
+let snakeHeadAngle = 'zero'
+let moveCount = 1
+
+
+
+let highScore = localStorage.getItem("highScore") || 0
 // let snakeInitial = [[1, 2], [1, 3], [1, 4]]
 
 
@@ -15,6 +27,14 @@ const col = 36
 // let leftBtn = document.getElementById("leftBtn")
 // let upBtn = document.getElementById("upBtn")
 // let downBtn = document.getElementById("downBtn")
+
+
+
+
+
+
+
+
 let direction = 'right'
 let applePos = [1 + Math.floor(Math.random() * (row - 2)), 1 + Math.floor(Math.random() * col - 2)]
 let score = 0
@@ -24,12 +44,20 @@ let nextMove = 'right'
 let dirBtn = document.querySelectorAll(".dirBtn")
 let gameOverFlag = false
 
-let soundFx ={
+const isMusicOn = document.querySelector("#musicOn")
+// isMusicOn.checked
+// if(isMusicOn.checked){
+//     console.log("checked")
+// }else if(!isMusicOn.checked){
+//     console.log("unChecked")
+// }
+
+let soundFx = {
     eat: new Howl({
-        src:"./quack_5.mp3"
+        src: "./quack_5.mp3"
     }),
     gameOverFX: new Howl({
-        src:"./tmp8ljn9e7h.mp3"
+        src: "./tmp8ljn9e7h.mp3"
     }),
     startGameFX: new Howl({
         src: "./a-few-moments-later-sponge-bob-sfx-fun.mp3"
@@ -37,8 +65,8 @@ let soundFx ={
 }
 
 let gameSound = {
-    music : new Howl({
-        src:"./u_i_a.mp3",
+    music: new Howl({
+        src: "./u_i_a.mp3",
         loop: true,
         volume: 0.20
     })
@@ -86,24 +114,28 @@ const keyInputHandler = () => {
 const checkValidMovement = (move) => {
     if (direction === 'right' && move !== 'left') {
         direction = `${move}`
+        snakeHeadAngle = 'zero'
     } else if (direction === 'left' && move !== 'right') {
         direction = `${move}`
+        snakeHeadAngle = 'minusOneEighty'
     } else if (direction === 'up' && move !== 'down') {
         direction = `${move}`
+        snakeHeadAngle = 'minusNinety'
     } else if (direction === 'down' && move !== 'up') {
         direction = `${move}`
+        snakeHeadAngle = 'minusTwoSeventy'
     }
 }
 const applePosition = () => {
-    applePos = [ Math.floor(Math.random() * (row - 2)),  Math.floor(Math.random() * col - 2)]
+    applePos = [Math.floor(Math.random() * (row - 2)), Math.floor(Math.random() * col - 2)]
     // console.log(applePos)
-    if(applePos[0] <= 0 || applePos[1] <= 0){
+    if (applePos[0] <= 0 || applePos[1] <= 0) {
         applePosition()
     }
 
-    
+
     for (let i = 0; i < snakeInitial.length; i++) {
-        if (snakeInitial.some((ele)=>{
+        if (snakeInitial.some((ele) => {
             return ele === applePos
         })) {
             applePosition()
@@ -114,14 +146,19 @@ const applePosition = () => {
 
 
 
+
 const startGame = () => {
-    if(soundFx.gameOverFX.playing()){
+    if (soundFx.gameOverFX.playing()) {
         soundFx.gameOverFX.stop()
     }
 
-    if(!gameSound.music.playing()){
-        gameSound.music.play()
+    if (!gameSound.music.playing()) {
+        if (isMusicOn.checked) {
+            gameSound.music.play()
+
+        }
     }
+    moveCount = 1
     soundFx.startGameFX.play()
     score = 0
     snakeInitial = snakePosition()
@@ -131,13 +168,14 @@ const startGame = () => {
     gameOverFlag = false
     gameOver.style.visibility = 'hidden'
     controllerDisplay.style.visibility = 'visible'
+    musicControl.style.visibility = 'visible'
     currentGame = setInterval(mainGameLoop, 300)
 }
 
 const snakePosition = () => {
     let randRow = Math.floor(Math.random() * 18)
     let randCol = Math.floor(Math.random() * 18)
-    if(randRow <= 0 && randCol <= 0){
+    if (randRow <= 0 && randCol <= 0) {
         randRow = 2
         randCol = 2
     }
@@ -153,7 +191,7 @@ const menuScreen = () => {
 
 
 
-    startButton.textContent = 'Start Games'
+    startButton.textContent = `JSnake/ntart`
     menuContainer.appendChild(startButton)
     playground.appendChild(menuContainer)
 
@@ -173,7 +211,18 @@ menuScreen()
 keyInputHandler()
 
 const mainGameLoop = () => {
+    // isMusicOn.checked
+    if (isMusicOn.checked) {
+        if (!gameSound.music.playing()) {
+            console.log("checked but music where")
+            gameSound.music.play()
+        }
 
+    } else if (!isMusicOn.checked && gameSound.music.playing()) {
+        gameSound.music.stop()
+    }
+    // console.log(isMusicOn.checked)
+    // gameSound.music.play()
     snakeCop = [...snakeInitial]
     checkValidMovement(nextMove)
     snakeMovement()
@@ -206,7 +255,12 @@ const checkAppleEat = () => {
         snakeInitial.unshift([snakeInitial[0][0], snakeInitial[0][1]])
         applePosition()
         soundFx.eat.play()
-        score++
+        moveCount++
+        if (moveCount % 5 === 0) {
+            score += 5
+            moveCount = 0
+        }
+        else { score++ }
 
     }
 }
@@ -270,22 +324,35 @@ const checkBoundary = () => {
 }
 
 const gameOverScreen = () => {
-    if(soundFx.startGameFX.playing()){
+    if (soundFx.startGameFX.playing()) {
         soundFx.startGameFX.stop()
+    }
+
+    const scoreDisplayS = document.querySelector(".scoreDisplayS")
+    if (score > highScore) {
+        highScore = score
+        localStorage.setItem("highScore", JSON.stringify(highScore))
+        scoreDisplayS.textContent = `New Highscore: ${score}`
+    } else {
+        scoreDisplayS.textContent = `Score: ${score}`
     }
     gameSound.music.stop()
     soundFx.gameOverFX.play()
     clearInterval(currentGame)
-    const scoreDisplayS = document.querySelector(".scoreDisplayS")
-    scoreDisplayS.textContent = `Score: ${score}`
+    
+
+
     gameOver.style.visibility = 'visible'
     controllerDisplay.style.visibility = 'hidden'
+    musicControl.style.visibility = 'hidden'
+
     restartBtn.addEventListener("click", startGame)
 }
 
 const renderGraphics = () => {
 
     scoreDisplay.textContent = `Score: ${score}`
+    highScoreDisplay.textContent = `HighScore: ${highScore}`
     if (!gameOverFlag) {
         playgroundChild.innerHTML = '';
         for (let i = 0; i < row; i++) {
@@ -333,7 +400,7 @@ const renderGraphics = () => {
                         box.innerHTML = `
                         <img src='./rightTile.png'>
                         `
-                    }else if (i !== row - 1 && i !== 0 && j === 0 && j !== col - 1) {
+                    } else if (i !== row - 1 && i !== 0 && j === 0 && j !== col - 1) {
                         box.classList.add("tile")
                         box.innerHTML = `
                         <img src='./leftTile.png'>
@@ -345,12 +412,19 @@ const renderGraphics = () => {
 
                     if (snakeInitial[snakeInitial.length - 1][0] === i && snakeInitial[snakeInitial.length - 1][1] === j) {
                         box.classList.add("head")
+                        box.classList.add(`${snakeHeadAngle}`)
                     } else {
                         box.classList.remove("head")
                     }
 
                     if (applePos[0] === i && applePos[1] === j) {
                         box.classList.add("apple")
+                        if (moveCount % 5 === 0) {
+                            box.innerHTML = `<img src='./steak.png'/>`
+                        } else {
+                            box.innerHTML = `<img src='./appleNormal.png'/>`
+                        }
+
                     }
                 }
                 playgroundChild.appendChild(box)
